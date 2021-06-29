@@ -115,9 +115,11 @@ class NoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $note = $this->note->find($id);
+        $userId = $request->get('user_id');
+
+        $note = $this->note->where('user_id', $userId)->find($id);
 
         if($note === null){
             return response()->json(['error' => 'Impossível realizar a exclusão. O recurso solicitado não existe'], 404);
