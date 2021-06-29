@@ -31,6 +31,18 @@
 <script>
     export default {
         props: ['user_id'],
+        computed: {
+            token(){
+                let token = document.cookie.split(';').find(indice => {
+                    return indice.includes('token=');
+                });
+
+                token = token.split('=')[1];
+                token = 'Bearer ' + token;
+
+                return token;
+            }
+        },
         data(){
             return {
                 url: 'http://localhost:8000/api/v1/note',
@@ -44,7 +56,14 @@
         },
         methods: {
             loadMoreData($state){
-                this.$http.get(this.url + '?page=' + this.page + '&user_id=' + this.user_id)
+                let config = {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': this.token
+                    }
+                }
+
+                this.$http.get(this.url + '?page=' + this.page + '&user_id=' + this.user_id, config)
                     .then((response) => {
                         return response.json();
                     }).then(response => {
@@ -70,7 +89,8 @@
 
                 let config = {
                     headers: {
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'Authorization': this.token
                     }
                 }
 
@@ -98,9 +118,6 @@
                         console.log(errors);
                     });
             }*/
-        },
-        mounted(){
-            this.loadMoreData();
         }
     }
 </script>

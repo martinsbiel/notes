@@ -14,6 +14,18 @@
 <script>
     export default {
         props: ['user_id'],
+        computed: {
+            token(){
+                let token = document.cookie.split(';').find(indice => {
+                    return indice.includes('token=');
+                });
+
+                token = token.split('=')[1];
+                token = 'Bearer ' + token;
+
+                return token;
+            }
+        },
         data(){
             return {
                 url: 'http://localhost:8000/api/v1/note/search',
@@ -30,7 +42,8 @@
 
                 let config = {
                     headers: {
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'Authorization': this.token
                     }
                 }
 
@@ -48,9 +61,6 @@
                         this.count = 0;
                     });
             },
-        },
-        mounted(){
-            //this.loadNotes();
         }
     }
 </script>
