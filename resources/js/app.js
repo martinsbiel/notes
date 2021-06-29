@@ -8,8 +8,18 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 
+import Vue from 'vue';
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
+
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+    state: {
+        item: {}
+    }
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -40,4 +50,5 @@ Vue.component('InfiniteLoading', require('vue-infinite-loading'));
 
 const app = new Vue({
     el: '#app',
+    store
 });

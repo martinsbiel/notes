@@ -8,9 +8,9 @@
                         <p class="card-text" style="white-space: break-spaces;">{{c.content}}</p>
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
-                        <button class="btn btn-primary">Visualizar</button>
+                        <button class="btn btn-primary" :data-toggle="view.dataToggle" :data-target="view.dataTarget" @click="setStore(c)">Visualizar</button>
                         <button class="btn btn-success">Editar</button>
-                        <button class="btn btn-danger">Excluir</button>
+                        <button class="btn btn-danger">Remover</button>
                     </div>
                 </div>
             </div>
@@ -20,6 +20,11 @@
 
 <script>
     export default {
-        props: ['data']
+        props: ['data', 'view'],
+        methods: {
+            setStore(obj){
+                this.$store.state.item = obj;
+            }
+        },
     }
 </script>

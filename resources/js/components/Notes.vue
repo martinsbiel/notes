@@ -1,10 +1,16 @@
 <template>
     <div class="container">
-        <button type="button" data-toggle="modal" data-target="#modalNote" class="btn btn-outline-dark btn-lg">Adicionar nota</button>
+        <button type="button" data-toggle="modal" data-target="#modalNoteAdd" class="btn btn-outline-dark btn-lg">Adicionar nota</button>
         <hr>
-        <card-component :data="notes"></card-component>
+        <card-component 
+        :data="notes" 
+        :view="{
+            visible: true,
+            dataToggle: 'modal',
+            dataTarget: '#modalNoteView'
+        }"></card-component>
         <infinite-loading @distance="1" @infinite="loadMoreData"></infinite-loading>
-        <modal-component id="modalNote" title="Adicionar nota">
+        <modal-component id="modalNoteAdd" title="Adicionar nota">
             <template v-slot:alerts>
                 <alert-component type="success" :details="transactionDetails" title="Cadastro realizado com sucesso" v-if="transactionStatus == 'added'"></alert-component>
                 <alert-component type="danger" :details="transactionDetails" title="Erro ao tentar cadastrar a nota" v-if="transactionStatus == 'error'"></alert-component>
@@ -23,6 +29,26 @@
             <template v-slot:footer>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-dark" @click="save()">Salvar</button>
+            </template>
+        </modal-component>
+
+        <modal-component id="modalNoteView" title="Visualizar nota">
+            <template v-slot:alerts>
+                
+            </template>
+            <template v-slot:content>
+                <div class="form-group">
+                    <label for="titleView">Título:</label>
+                    <input class="form-control" type="text" name="titleView" id="titleView" placeholder="Título da nota" :value="$store.state.item.title" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="contentView">Conteúdo:</label>
+                    <textarea style="min-height: 200px;" class="form-control" name="contentView" id="contentView" placeholder="Conteúdo da nota" :value="$store.state.item.content" disabled></textarea>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
             </template>
         </modal-component>
     </div>
