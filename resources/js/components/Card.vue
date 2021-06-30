@@ -9,7 +9,7 @@
                     </div>
                     <div class="card-footer d-flex justify-content-between flex-wrap">
                         <button class="btn btn-primary" :data-toggle="view.dataToggle" :data-target="view.dataTarget" @click="setStore(c)">Visualizar</button>
-                        <button class="btn btn-success">Editar</button>
+                        <button class="btn btn-success" :data-toggle="update.dataToggle" :data-target="update.dataTarget" @click="setStore(c)">Editar</button>
                         <button class="btn btn-danger" :data-toggle="remove.dataToggle" :data-target="remove.dataTarget" @click="setStore(c)">Remover</button>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
 
 <script>
     export default {
-        props: ['data', 'view', 'remove'],
+        props: ['data', 'view', 'remove', 'update'],
         methods: {
             setStore(obj){
                 this.$store.state.transaction.status = '';

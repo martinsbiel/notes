@@ -13,6 +13,11 @@
             visible: true,
             dataToggle: 'modal',
             dataTarget: '#modalNoteRemove'
+        }" 
+        :update="{
+            visible: true,
+            dataToggle: 'modal',
+            dataTarget: '#modalNoteUpdate'
         }"></card-component>
         <infinite-loading @distance="1" :identifier="infiniteId" @infinite="loadMoreData"></infinite-loading>
         <modal-component id="modalNoteAdd" title="Adicionar nota">
@@ -79,13 +84,40 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="contentRemove">Data de criação:</label>
+                    <label for="dateRemove">Data de criação:</label>
                     <input class="form-control" type="text" name="dateRemove" id="dateRemove" placeholder="Data da nota" :value="$store.state.item.created_at" disabled>
                 </div>
             </template>
             <template v-slot:footer>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-danger" @click="remove()" v-if="$store.state.transaction.status != 'success'">Remover</button>
+            </template>
+        </modal-component>
+
+        <modal-component id="modalNoteUpdate" title="Atualizar nota">
+            <template v-slot:alerts>
+                <alert-component type="success" title="Transação realizada com sucesso" :details="$store.state.transaction" v-if="$store.state.transaction.status == 'success'"></alert-component>
+                <alert-component type="danger" title="Erro na transação" :details="$store.state.transaction" v-if="$store.state.transaction.status == 'error'"></alert-component>
+            </template>
+            <template v-slot:content>
+                <div class="form-group">
+                    <label for="titleUpdate">Título:</label>
+                    <input class="form-control" type="text" name="titleUpdate" id="titleUpdate" placeholder="Título da nota" v-model="$store.state.item.title">
+                </div>
+
+                <div class="form-group">
+                    <label for="contentUpdate">Conteúdo:</label>
+                    <textarea style="min-height: 200px;" class="form-control" name="contentUpdate" id="contentUpdate" placeholder="Conteúdo da nota" v-model="$store.state.item.content"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateUpdate">Data de criação:</label>
+                    <input class="form-control" type="text" name="dateUpdate" id="dateUpdate" placeholder="Data da nota" :value="$store.state.item.created_at" disabled>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-dark" @click="update()">Atualizar</button>
             </template>
         </modal-component>
     </div>
@@ -124,6 +156,32 @@
                 this.notes = [];
 
                 this.infiniteId += 1;
+            },
+            update(){
+                let formData = new FormData();
+                formData.append('_method', 'patch');
+                formData.append('title', this.$store.state.item.title);
+                formData.append('content', this.$store.state.item.content);
+                formData.append('user_id', this.user_id);
+
+                let config = {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': this.token
+                    }
+                }
+
+                axios.post(this.url + '/' + this.$store.state.item.id, formData, config)
+                    .then(response => {
+                        this.$store.state.transaction.status = 'success';
+                        this.$store.state.transaction.message = 'Nota atualizada com sucesso!';
+
+                        this.refreshInfiniteLoading();
+                    }).catch(errors => {
+                        this.$store.state.transaction.status = 'error';
+                        this.$store.state.transaction.message = errors.response.data.message;
+                        this.$store.state.transaction.data = errors.response.data.errors;
+                    });
             },
             remove(){
                 let confirmation = confirm('Tem certeza que deseja remover essa nota?');

@@ -96,7 +96,9 @@ class NoteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $note = $this->note->find($id);
+        $userId = $request->get('user_id');
+
+        $note = $this->note->where('user_id', $userId)->find($id);
 
         if($note === null){
             return response()->json(['error' => 'Impossível realizar a atualização. O recurso solicitado não existe'], 404);
