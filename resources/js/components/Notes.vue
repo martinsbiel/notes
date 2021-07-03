@@ -232,7 +232,8 @@
                         this.transactionDetails = {
                             message: 'ID do registro: ' + response.data.id
                         }
-                        console.log(response);
+                        
+                        this.refreshInfiniteLoading();
                     }).catch(errors => {
                         this.transactionStatus = 'error';
                         this.transactionDetails = {
