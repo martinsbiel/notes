@@ -58,8 +58,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="contentRemove">Data de criação:</label>
-                    <input class="form-control" type="text" name="dateView" id="dateView" placeholder="Data da nota" :value="$store.state.item.created_at" disabled>
+                    <label for="dateView">Data de criação:</label>
+                    <input class="form-control" type="text" name="dateView" id="dateView" placeholder="Data da nota" :value="$store.state.item.created_at | formatDateGlobal" disabled>
+                </div>
+
+                <div v-if="$store.state.item.updated_at != $store.state.item.created_at" class="form-group">
+                    <label for="dateUpView">Data da última atualização:</label>
+                    <input class="form-control" type="text" name="dateUpView" id="dateUpView" placeholder="Data da última atualização" :value="$store.state.item.updated_at | formatDateGlobal" disabled>
                 </div>
             </template>
             <template v-slot:footer>
@@ -85,7 +90,12 @@
 
                 <div class="form-group">
                     <label for="dateRemove">Data de criação:</label>
-                    <input class="form-control" type="text" name="dateRemove" id="dateRemove" placeholder="Data da nota" :value="$store.state.item.created_at" disabled>
+                    <input class="form-control" type="text" name="dateRemove" id="dateRemove" placeholder="Data da nota" :value="$store.state.item.created_at | formatDateGlobal" disabled>
+                </div>
+
+                <div v-if="$store.state.item.updated_at != $store.state.item.created_at" class="form-group">
+                    <label for="dateUpRemove">Data da última atualização:</label>
+                    <input class="form-control" type="text" name="dateUpRemove" id="dateUpRemove" placeholder="Data da última atualização" :value="$store.state.item.updated_at | formatDateGlobal" disabled>
                 </div>
             </template>
             <template v-slot:footer>
@@ -112,7 +122,12 @@
 
                 <div class="form-group">
                     <label for="dateUpdate">Data de criação:</label>
-                    <input class="form-control" type="text" name="dateUpdate" id="dateUpdate" placeholder="Data da nota" :value="$store.state.item.created_at" disabled>
+                    <input class="form-control" type="text" name="dateUpdate" id="dateUpdate" placeholder="Data da nota" :value="$store.state.item.created_at | formatDateGlobal" disabled>
+                </div>
+
+                <div v-if="$store.state.item.updated_at != $store.state.item.created_at" class="form-group">
+                    <label for="dateUpUpdate">Data da última atualização:</label>
+                    <input class="form-control" type="text" name="dateUpUpdate" id="dateUpUpdate" placeholder="Data da última atualização" :value="$store.state.item.updated_at | formatDateGlobal" disabled>
                 </div>
             </template>
             <template v-slot:footer>

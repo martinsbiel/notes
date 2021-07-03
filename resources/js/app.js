@@ -70,6 +70,25 @@ Vue.component('alert-component', require('./components/Alert.vue').default);
 Vue.component('search-component', require('./components/Search.vue').default);
 Vue.component('InfiniteLoading', require('vue-infinite-loading'));
 
+Vue.filter('formatDateGlobal', function(d){
+    if(!d) return '';
+
+    d = d.split('T');
+
+    let date = d[0];
+    let time = d[1];
+
+    // format date
+    date = date.split('-');
+    date = date[2] + '/' + date[1] + '/' + date[0];
+
+    // format time
+    time = time.split('.');
+    time = time[0];
+
+    return date + ' ' + time;
+});
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
