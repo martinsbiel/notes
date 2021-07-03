@@ -12,6 +12,29 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
+// intercepting requests and responses
+Vue.http.interceptors.push((request, next) => {
+    let token = document.cookie.split(';').find(indice => {
+        return indice.includes('token=');
+    });
+
+    token = token.split('=')[1];
+    token = 'Bearer ' + token;
+
+    request.headers.set('Authorization', token);
+    request.headers.set('Accept', 'application/json');
+
+    next(function(response){
+        if(response.status == 401 && response.body.message == 'Token has expired'){
+            axios.post('http://localhost:8000/api/refresh')
+                .then(response => {
+                    document.cookie = 'token=' + response.data.token;
+                    window.location.reload();
+                });
+        }
+    });
+});
+
 import Vuex from 'vuex';
 Vue.use(Vuex);
 

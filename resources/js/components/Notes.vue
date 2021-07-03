@@ -126,18 +126,6 @@
 <script>
     export default {
         props: ['user_id'],
-        computed: {
-            token(){
-                let token = document.cookie.split(';').find(indice => {
-                    return indice.includes('token=');
-                });
-
-                token = token.split('=')[1];
-                token = 'Bearer ' + token;
-
-                return token;
-            }
-        },
         data(){
             return {
                 url: 'http://localhost:8000/api/v1/note',
@@ -164,14 +152,7 @@
                 formData.append('content', this.$store.state.item.content);
                 formData.append('user_id', this.user_id);
 
-                let config = {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': this.token
-                    }
-                }
-
-                axios.post(this.url + '/' + this.$store.state.item.id, formData, config)
+                axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
                         this.$store.state.transaction.status = 'success';
                         this.$store.state.transaction.message = 'Nota atualizada com sucesso!';
@@ -193,15 +174,8 @@
                 let formData = new FormData();
                 formData.append('_method', 'delete');
                 formData.append('user_id', this.user_id);
-
-                let config = {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': this.token
-                    }
-                }
                 
-                axios.post(this.url + '/' + this.$store.state.item.id, formData, config)
+                axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
                         this.$store.state.transaction.status = 'success';
                         this.$store.state.transaction.message = response.data.msg;
@@ -213,14 +187,7 @@
                     });
             },
             loadMoreData($state){
-                let config = {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': this.token
-                    }
-                }
-
-                this.$http.get(this.url + '?page=' + this.page + '&user_id=' + this.user_id, config)
+                this.$http.get(this.url + '?page=' + this.page + '&user_id=' + this.user_id)
                     .then((response) => {
                         return response.json();
                     }).then(response => {
@@ -244,14 +211,7 @@
                 formData.append('title', this.titleNote);
                 formData.append('content', this.contentNote);
 
-                let config = {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': this.token
-                    }
-                }
-
-                axios.post(this.url, formData, config)
+                axios.post(this.url, formData)
                     .then(response => {
                         this.transactionStatus = 'added';
                         this.transactionDetails = {

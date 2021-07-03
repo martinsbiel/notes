@@ -21,9 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::post('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
     Route::apiResource('note', 'NoteController');
     Route::post('note/search', 'NoteController@search');
 });
 
 Route::post('login', 'AuthController@login');
+Route::post('refresh', 'AuthController@refresh');
