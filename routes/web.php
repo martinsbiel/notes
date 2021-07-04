@@ -28,3 +28,6 @@ Route::get('/notes', function(){
 Route::get('/search', function(){
     return view('app.search');
 })->name('search')->middleware('auth');
+
+Route::get('notes/export-excel/{extension}', 'NoteController@exportExcel')->name('notes.exportExcel')->middleware('auth');
+Route::get('notes/export-pdf', 'NoteController@exportPDF')->name('notes.exportPDF')->middleware('auth');

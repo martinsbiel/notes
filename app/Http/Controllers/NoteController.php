@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Note;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\NotesExport;
+use PDF;
 
 class NoteController extends Controller
 {
@@ -143,5 +146,22 @@ class NoteController extends Controller
         }
 
         return response()->json($notes, 200);
+    }
+
+    public function exportExcel($extension){
+        if(in_array($extension, ['xlsx', 'csv'])){
+            return Excel::download(new NotesExport, 'my-notes.' . $extension);
+        }
+
+        return redirect()->route('notes');
+    }
+
+    public function exportPDF(){
+        $notes = auth()->user()->notes()->get();
+        $pdf = PDF::loadView('app.pdf', ['notes' => $notes]);
+
+        $pdf->setPaper('a4', 'landscape');
+
+        return $pdf->stream('my-notes.pdf');
     }
 }

@@ -10005,3 +10005,9 @@ h3 {
 .note {
   background-color: #c5bd49;
 }
+
+@media only screen and (max-width: 790px) {
+  .export-btn {
+    display: none;
+  }
+}

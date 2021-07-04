@@ -10,3 +10,9 @@
 .note {
     background-color: rgb(197, 189, 73);
 }
+
+@media only screen and (max-width: 790px) {
+    .export-btn {
+        display: none;
+    }
+}
