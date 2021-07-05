@@ -10006,7 +10006,7 @@ h3 {
   background-color: #c5bd49;
 }
 
-@media only screen and (max-width: 790px) {
+@media only screen and (max-width: 590px) {
   .export-btn {
     display: none;
   }

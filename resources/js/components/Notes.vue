@@ -2,8 +2,7 @@
     <div class="container">
         <button type="button" data-toggle="modal" data-target="#modalNoteAdd" class="btn btn-outline-dark btn-lg">Adicionar nota</button>
         <a target="_blank" href="notes/export-pdf" class="btn btn-outline-success btn-lg float-right export-btn">Exportar PDF</a>
-        <a href="notes/export-excel/xlsx" class="btn btn-outline-success btn-lg float-right mr-2 export-btn">Exportar XLSX</a>
-        <a href="notes/export-excel/csv" class="btn btn-outline-success btn-lg float-right mr-2 export-btn" data-toggle="tooltip" data-placement="top" title="Funcionando parcialmente, por enquanto">Exportar CSV</a>
+        <a href="notes/export-excel" class="btn btn-outline-success btn-lg float-right mr-2 export-btn">Exportar Excel</a>
         <hr>
         <card-component 
         :data="notes" 
@@ -142,9 +141,6 @@
 </template>
 
 <script>
-    $(function(){
-        $('[data-toggle="tooltip"]').tooltip()
-    });
     export default {
         props: ['user_id'],
         data(){

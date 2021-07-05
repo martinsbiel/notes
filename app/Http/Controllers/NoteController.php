@@ -148,12 +148,8 @@ class NoteController extends Controller
         return response()->json($notes, 200);
     }
 
-    public function exportExcel($extension){
-        if(in_array($extension, ['xlsx', 'csv'])){
-            return Excel::download(new NotesExport, 'my-notes.' . $extension);
-        }
-
-        return redirect()->route('notes');
+    public function exportExcel(){
+        return Excel::download(new NotesExport, 'my-notes.xlsx');
     }
 
     public function exportPDF(){
