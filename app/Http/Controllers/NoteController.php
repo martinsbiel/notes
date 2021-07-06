@@ -7,6 +7,7 @@ use App\Models\Note;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\NotesExport;
 use PDF;
+use Illuminate\Support\Facades\Log;
 
 class NoteController extends Controller
 {
@@ -29,6 +30,8 @@ class NoteController extends Controller
         if(count($notes) == 0){
             return response()->json(['error' => 'Nenhuma nota encontrada para este usuário'], 404);
         }
+
+        Log::info('Usuário de ID ' . $id . ' está visualizando suas próprias notas');
 
         return response()->json($notes, 200);
     }
@@ -58,6 +61,8 @@ class NoteController extends Controller
             'title' => $request->title,
             'content' => $request->content
         ]);
+
+        Log::info('Nota adicionada pelo usuário de ID ' . $request->user_id);
 
         return response()->json($note, 201);
     }
@@ -111,6 +116,8 @@ class NoteController extends Controller
 
         $note->fill($request->all())->save();
 
+        Log::info('Nota de ID ' . $id . ' foi atualizada pelo usuário de ID: ' . $userId);
+
         return response()->json($note, 200);
     }
 
@@ -132,6 +139,8 @@ class NoteController extends Controller
 
         $note->delete();
 
+        Log::info('Nota de ID ' . $id . ' foi removida pelo usuário de ID: ' . $userId);
+
         return response()->json(['msg' => 'A nota foi removida com sucesso'], 200);
     }
 
@@ -149,6 +158,8 @@ class NoteController extends Controller
     }
 
     public function exportExcel(){
+        Log::info('Usuário de ID ' . auth()->user()->id . ' exportou suas notas para Excel');
+
         return Excel::download(new NotesExport, 'my-notes.xlsx');
     }
 
@@ -157,6 +168,8 @@ class NoteController extends Controller
         $pdf = PDF::loadView('app.pdf', ['notes' => $notes]);
 
         $pdf->setPaper('a4', 'landscape');
+
+        Log::info('Usuário de ID ' . auth()->user()->id . ' exportou suas notas para PDF');
 
         return $pdf->stream('my-notes.pdf');
     }
