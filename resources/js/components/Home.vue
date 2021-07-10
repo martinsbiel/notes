@@ -6,7 +6,7 @@
                     <div class="card-header">Bem-vindo</div>
 
                     <div class="card-body">
-                        <p>Apresentar indicadores do sistema</p>
+                        <p>Seja bem-vindo ao sistema, sinta-se livre pra criar, gerenciar e exportar suas notas! :)</p>
                     </div>
                 </div>
             </div>

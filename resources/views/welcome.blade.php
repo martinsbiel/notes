@@ -124,9 +124,9 @@
               <div class="row">
                 <div class="col-md-8">
                   <p>
-                    <a href="https://github.com/martinsbiel/notes">GitHub</a>
-                    <a href="https://twitter.com/martinsbieel">Twitter</a>
-                    <a href="#">Site</a>
+                    <a target="_blank" href="https://github.com/martinsbiel/notes">GitHub</a>
+                    <a target="_blank" href="https://twitter.com/martinsbieel">Twitter</a>
+                    <a target="_blank" href="https://martinsgabriel.dev">Meu Site</a>
                   </p>
                 </div>
                 <div class="col-md-4 d-flex justify-content-end">
