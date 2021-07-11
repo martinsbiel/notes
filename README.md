@@ -8,6 +8,7 @@ Projeto Laravel e VueJs que consiste em um sistema de controle de notas/lembrete
 - Abra o arquivo `.env` e edite com as credenciais do seu banco de dados
 - Execute `composer install` para instalar as dependências relacionadas ao PHP
 - Execute `php artisan key:generate` para gerar uma chave para a aplicação
+- Execute `php artisan jwt:secret` para gerar a chave que será usada pelo JWT
 - Execute `php artisan migrate` para executar as migrações do banco de dados
 - Execute `npm install` para instalar as dependências relacionadas ao VueJs
 - Execute `npm run dev`
