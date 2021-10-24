@@ -3,9 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    // model injection
+    public function __construct(User $user){
+        $this->user = $user;
+    }
+
+    public function register(Request $request){
+        $credentials = $request->all(['name', 'email', 'password']);
+
+        $user = $this->user->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
+
+        return response()->json($user, 201);
+    }
+
     public function login(Request $request){
         $credentials = $request->all(['email', 'password']);
 

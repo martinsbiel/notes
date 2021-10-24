@@ -62,6 +62,7 @@ const store = new Vuex.Store({
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('login-component', require('./components/Login.vue').default);
+Vue.component('register-component', require('./components/Register.vue').default);
 Vue.component('home-component', require('./components/Home.vue').default);
 Vue.component('notes-component', require('./components/Notes.vue').default);
 Vue.component('modal-component', require('./components/Modal.vue').default);

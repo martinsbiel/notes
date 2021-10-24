@@ -15,6 +15,3 @@ Projeto Laravel e VueJs que consiste em um sistema de controle de notas/lembrete
 - Execute `npm run watch`
 - Execute `php artisan serve` para servir a aplicação
 - Pronto, agora é só acessar pelo seu navegador
-
-## Aviso
-Existe um problema conhecido de acordo com a [issue #1](https://github.com/martinsbiel/notes/issues/1) que requer ao usuário fazer logout e login novamente após se registrar para que o token JWT seja gerado. O conserto está a caminho. :D

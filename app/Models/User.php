@@ -64,6 +64,14 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function rules(){
+        return [
+            'name' => 'required',
+            'email' => 'email|unique:users',
+            'password' => 'required|min:4|confirmed'
+        ];
+    }
+
     public function notes(){
         return $this->hasMany('App\Models\Note');
     }
