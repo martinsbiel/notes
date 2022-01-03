@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\NotesExport;
 use PDF;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\NoteRequest;
 
 class NoteController extends Controller
 {
@@ -52,9 +53,9 @@ class NoteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(NoteRequest $request)
     {
-        $request->validate($this->note->rules(), $this->note->feedback());
+        $request->validate($request->rules(), $request->messages());
 
         $note = $this->note->create([
             'user_id' => $request->user_id,
@@ -102,7 +103,7 @@ class NoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(NoteRequest $request, $id)
     {
         $userId = $request->get('user_id');
 
@@ -112,7 +113,7 @@ class NoteController extends Controller
             return response()->json(['error' => 'Impossível realizar a atualização. O recurso solicitado não existe'], 404);
         }
 
-        $request->validate($this->note->rules(), $this->note->feedback());
+        $request->validate($request->rules(), $request->messages());
 
         $note->fill($request->all())->save();
 
