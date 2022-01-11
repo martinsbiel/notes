@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\NoteRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Models\Note;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\NotesExport;
-use PDF;
-use Illuminate\Support\Facades\Log;
 use App\Http\Requests\NoteRequest;
 
 class NoteController extends Controller
 {
-    // model injection
-    public function __construct(Note $note){
-        $this->note = $note;
+    private NoteRepositoryInterface $noteRepository;
+
+    public function __construct(NoteRepositoryInterface $noteRepository) 
+    {
+        $this->noteRepository = $noteRepository;
     }
 
     /**
@@ -22,19 +21,13 @@ class NoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $id = $request->get('user_id');
-
-        $notes = $this->note->where('user_id', $id)->paginate(10);
-
-        if(count($notes) == 0){
-            return response()->json(['error' => 'Nenhuma nota encontrada para este usuário'], 404);
+        try {
+            return response()->json($this->noteRepository->getNotesByUser(), 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
         }
-
-        Log::info('Usuário de ID ' . $id . ' está visualizando suas próprias notas');
-
-        return response()->json($notes, 200);
     }
 
     /**
@@ -50,22 +43,14 @@ class NoteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\NoteRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(NoteRequest $request)
     {
-        $request->validate($request->rules(), $request->messages());
+        $validated = $request->validated();
 
-        $note = $this->note->create([
-            'user_id' => $request->user_id,
-            'title' => $request->title,
-            'content' => $request->content
-        ]);
-
-        Log::info('Nota adicionada pelo usuário de ID ' . $request->user_id);
-
-        return response()->json($note, 201);
+        return response()->json($this->noteRepository->createNote($validated), 201);
     }
 
     /**
@@ -76,13 +61,11 @@ class NoteController extends Controller
      */
     public function show($id)
     {
-        $note = $this->note->with('user')->find($id);
-
-        if($note === null){
-            return response()->json(['error' => 'Impossível realizar a exibição. O recurso solicitado não existe'], 404);
+        try {
+            return response()->json($this->noteRepository->getNoteById($id), 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
         }
-
-        return response()->json($note, 200);
     }
 
     /**
@@ -99,27 +82,19 @@ class NoteController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\NoteRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(NoteRequest $request, $id)
     {
-        $userId = $request->get('user_id');
+        try {
+            $validated = $request->validated();
 
-        $note = $this->note->where('user_id', $userId)->find($id);
-
-        if($note === null){
-            return response()->json(['error' => 'Impossível realizar a atualização. O recurso solicitado não existe'], 404);
+            return response()->json($this->noteRepository->updateNote($id, $validated), 200);
+        } catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 404);
         }
-
-        $request->validate($request->rules(), $request->messages());
-
-        $note->fill($request->all())->save();
-
-        Log::info('Nota de ID ' . $id . ' foi atualizada pelo usuário de ID: ' . $userId);
-
-        return response()->json($note, 200);
     }
 
     /**
@@ -128,50 +103,32 @@ class NoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        $userId = $request->get('user_id');
+        try {
+            $delete = $this->noteRepository->deleteNote($id);
 
-        $note = $this->note->where('user_id', $userId)->find($id);
-
-        if($note === null){
-            return response()->json(['error' => 'Impossível realizar a exclusão. O recurso solicitado não existe'], 404);
+            return response()->json(['msg' => 'A nota foi removida com sucesso'], 200);
+        } catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 404);
         }
-
-        $note->delete();
-
-        Log::info('Nota de ID ' . $id . ' foi removida pelo usuário de ID: ' . $userId);
-
-        return response()->json(['msg' => 'A nota foi removida com sucesso'], 200);
     }
 
     public function search(Request $request){
-        $id = $request->get('user_id');
-        $data = $request->get('search');
+        try {
+            $data = $request->get('search');
 
-        $notes = $this->note->where('user_id', $id)->where('title', 'like', "%{$data}%")->get();
-
-        if(count($notes) == 0){
-            return response()->json(['error' => 'Nenhuma nota encontrada para estes termos'], 404);
+            return response()->json($this->noteRepository->searchNote($data), 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
         }
-
-        return response()->json($notes, 200);
     }
 
     public function exportExcel(){
-        Log::info('Usuário de ID ' . auth()->user()->id . ' exportou suas notas para Excel');
-
-        return Excel::download(new NotesExport, 'my-notes.xlsx');
+        return $this->noteRepository->exportNotesToExcel();
     }
 
     public function exportPDF(){
-        $notes = auth()->user()->notes()->get();
-        $pdf = PDF::loadView('app.pdf', ['notes' => $notes]);
-
-        $pdf->setPaper('a4', 'landscape');
-
-        Log::info('Usuário de ID ' . auth()->user()->id . ' exportou suas notas para PDF');
-
-        return $pdf->stream('my-notes.pdf');
+        return $this->noteRepository->exportNotesToPDF();
     }
 }
