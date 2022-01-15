@@ -148,7 +148,6 @@
      * Duplicating code until I find a way to do it properly :)
      */
     export default {
-        props: ['user_id'],
         data(){
             return {
                 url: 'http://localhost:8000/api/v1/note',
@@ -168,7 +167,6 @@
                 formData.append('_method', 'patch');
                 formData.append('title', this.$store.state.item.title);
                 formData.append('content', this.$store.state.item.content);
-                formData.append('user_id', this.user_id);
 
                 axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
@@ -189,7 +187,6 @@
 
                 let formData = new FormData();
                 formData.append('_method', 'delete');
-                formData.append('user_id', this.user_id);
                 
                 axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
@@ -203,7 +200,6 @@
             search(){
                 let formData = new FormData();
                 formData.append('search', this.searchText);
-                formData.append('user_id', this.user_id);
 
                 axios.post(this.urlSearch, formData)
                     .then(response => {

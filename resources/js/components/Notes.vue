@@ -142,7 +142,6 @@
 
 <script>
     export default {
-        props: ['user_id'],
         data(){
             return {
                 url: 'http://localhost:8000/api/v1/note',
@@ -167,7 +166,6 @@
                 formData.append('_method', 'patch');
                 formData.append('title', this.$store.state.item.title);
                 formData.append('content', this.$store.state.item.content);
-                formData.append('user_id', this.user_id);
 
                 axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
@@ -190,7 +188,6 @@
 
                 let formData = new FormData();
                 formData.append('_method', 'delete');
-                formData.append('user_id', this.user_id);
                 
                 axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
@@ -204,7 +201,7 @@
                     });
             },
             loadMoreData($state){
-                this.$http.get(this.url + '?page=' + this.page + '&user_id=' + this.user_id)
+                this.$http.get(this.url + '?page=' + this.page)
                     .then((response) => {
                         return response.json();
                     }).then(response => {
@@ -224,7 +221,6 @@
             },
             save(){
                 let formData = new FormData();
-                formData.append('user_id', this.user_id);
                 formData.append('title', this.titleNote);
                 formData.append('content', this.contentNote);
 
@@ -244,15 +240,6 @@
                         }
                     });
             },
-            /*
-            loadNotes(){
-                axios.get(this.url)
-                    .then(response => {
-                        this.notes = response.data;
-                    }).catch(errors => {
-                        console.log(errors);
-                    });
-            }*/
         }
     }
 </script>
