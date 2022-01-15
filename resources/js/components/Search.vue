@@ -25,32 +25,7 @@
             dataTarget: '#modalNoteUpdate'
         }"></card-component>
 
-        <modal-component id="modalNoteAdd" title="Adicionar nota">
-            <template v-slot:alerts>
-                <alert-component type="success" :details="transactionDetails" title="Cadastro realizado com sucesso" v-if="transactionStatus == 'added'"></alert-component>
-                <alert-component type="danger" :details="transactionDetails" title="Erro ao tentar cadastrar a nota" v-if="transactionStatus == 'error'"></alert-component>
-            </template>
-            <template v-slot:content>
-                <div class="form-group">
-                    <label for="title">Título:</label>
-                    <input class="form-control" type="text" name="title" id="title" placeholder="Título da nota" v-model="titleNote">
-                </div>
-
-                <div class="form-group">
-                    <label for="content">Conteúdo:</label>
-                    <textarea style="min-height: 200px;" class="form-control" name="content" id="content" placeholder="Conteúdo da nota" v-model="contentNote"></textarea>
-                </div>
-            </template>
-            <template v-slot:footer>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-dark" @click="save()">Salvar</button>
-            </template>
-        </modal-component>
-
         <modal-component id="modalNoteView" title="Visualizar nota">
-            <template v-slot:alerts>
-                
-            </template>
             <template v-slot:content>
                 <div class="form-group">
                     <label for="titleView">Título:</label>
@@ -78,10 +53,6 @@
         </modal-component>
 
         <modal-component id="modalNoteRemove" title="Remover nota">
-            <template v-slot:alerts>
-                <alert-component type="success" title="Transação realizada com sucesso" :details="$store.state.transaction" v-if="$store.state.transaction.status == 'success'"></alert-component>
-                <alert-component type="danger" title="Erro na transação" :details="$store.state.transaction" v-if="$store.state.transaction.status == 'error'"></alert-component>
-            </template>
             <template v-slot:content>
                 <div class="form-group">
                     <label for="titleRemove">Título:</label>
@@ -110,10 +81,6 @@
         </modal-component>
 
         <modal-component id="modalNoteUpdate" title="Atualizar nota">
-            <template v-slot:alerts>
-                <alert-component type="success" title="Transação realizada com sucesso" :details="$store.state.transaction" v-if="$store.state.transaction.status == 'success'"></alert-component>
-                <alert-component type="danger" title="Erro na transação" :details="$store.state.transaction" v-if="$store.state.transaction.status == 'error'"></alert-component>
-            </template>
             <template v-slot:content>
                 <div class="form-group">
                     <label for="titleUpdate">Título:</label>
@@ -170,12 +137,11 @@
 
                 axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
-                        this.$store.state.transaction.status = 'success';
-                        this.$store.state.transaction.message = 'Nota atualizada com sucesso!';
+                        toastr.success('Nota atualizada com sucesso');
                     }).catch(errors => {
-                        this.$store.state.transaction.status = 'error';
-                        this.$store.state.transaction.message = errors.response.data.message;
-                        this.$store.state.transaction.data = errors.response.data.errors;
+                        $.each(errors.response.data.errors, (key, v) => {
+                            toastr.error(v);
+                        });
                     });
             },
             remove(){
@@ -190,11 +156,9 @@
                 
                 axios.post(this.url + '/' + this.$store.state.item.id, formData)
                     .then(response => {
-                        this.$store.state.transaction.status = 'success';
-                        this.$store.state.transaction.message = response.data.msg;
+                        toastr.success(response.data.msg);
                     }).catch(errors => {
-                        this.$store.state.transaction.status = 'error';
-                        this.$store.state.transaction.message = errors.response.data.error;
+                        toastr.error(errors.response.data.error);
                     });
             },
             search(){

@@ -79,11 +79,12 @@
                     .then(data => {
                         if(data.token){
                             document.cookie = 'token=' + data.token;
+
+                            e.target.submit();
+                        } else {
+                            toastr.error(data.error);
                         }
                     });
-
-                // dar sequencia no envio do form de autenticação por sessão
-                e.target.submit();
             }
         }
     }
