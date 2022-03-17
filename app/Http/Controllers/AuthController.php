@@ -3,60 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Interfaces\AuthRepositoryInterface;
 
 class AuthController extends Controller
 {
-    // model injection
-    public function __construct(User $user){
-        $this->user = $user;
+    private AuthRepositoryInterface $authRepository;
+
+    public function __construct(AuthRepositoryInterface $authRepository)
+    {
+        $this->authRepository = $authRepository;
     }
 
     public function register(Request $request){
         $credentials = $request->all(['name', 'email', 'password']);
 
-        $user = $this->user->create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
-
-        return response()->json($user, 201);
+        return response()->json($this->authRepository->register($credentials), 201);
     }
 
     public function login(Request $request){
         $credentials = $request->all(['email', 'password']);
 
-        // autenticação (email e senha)
-        $token = auth('api')->attempt($credentials);
-        
-        if($token){ // usuario autenticado com sucesso
-            return response()->json(['token' => $token]);
-        } else { // erro de usuario ou senha
-            return response()->json(['error' => 'Usuário ou senha inválido'], 403);
-
-            // 401 = unauthorized -> não autorizado. é possivel que esteja logado mas nao autorizado
-            // 403 = forbidden -> proibido (login inválido)
+        try {
+            return response()->json(['token' => $this->authRepository->login($credentials)]);
+        } catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 403);
         }
-
-        // retornar um Json Web Token
-        return 'login';
     }
 
     public function logout(){
-        auth('api')->logout();
+        $this->authRepository->logout();
 
         return response()->json(['msg' => 'Logout foi realizado com sucesso']);
     }
 
     public function refresh(){
-        $token = auth('api')->refresh(); // cliente encaminhe um jwt válido. só renovar se o cliente tiver autorização valida para fazer isso
-
-        return response()->json(['token' => $token]);
+        return response()->json(['token' => $this->authRepository->refresh()]);
     }
 
     public function me(){
-        return response()->json(auth()->user());
+        return response()->json($this->authRepository->me());
     }
 }
